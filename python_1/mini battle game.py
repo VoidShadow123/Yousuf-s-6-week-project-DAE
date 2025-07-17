@@ -9,7 +9,7 @@ while player_hp > 0 and enemy_hp > 0:
     input("Press Enter to attack Pikachu")
     print("\nChoose your attack:")
     print("1. Light Attack (2–4 damage, always hits)")
-    print("2. Heavy Attack (6-10 damage, 50% chance to miss)")
+    print("2. Heavy Attack (6-10 damage, 45% chance to miss)")
     print("3. Regular Attack (3–5 + chance for crit)")
     choice = input("> ")
 
@@ -53,7 +53,7 @@ while player_hp > 0 and enemy_hp > 0:
     player_hp -= enemy_attack
     if player_hp < 0:
         player_hp = 0
-    print(f"The Pikachu hits back for {enemy_attack} damage.")
+    print(f"The Pikachu hits back with Thunderbolt for {enemy_attack} damage.")
     print(f"Your HP: {player_hp}")
     print("--------------------------")
 
