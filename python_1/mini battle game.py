@@ -1,10 +1,12 @@
 import random
 print ("An enemy has approached")
+#Initial Health
 enemy_hp = random.randint(5, 20)
 player_hp = 20
 print ("Pikachu HP:", enemy_hp)
 print ("Your HP:", player_hp)
 print ("-----------------------------")
+#Battle Loop
 while player_hp > 0 and enemy_hp > 0:
     input("Press Enter to attack Pikachu")
     print("\nChoose your attack:")
@@ -13,6 +15,7 @@ while player_hp > 0 and enemy_hp > 0:
     print("3. Regular Attack (3–5 + chance for crit)")
     choice = input("> ")
 
+#Players Turn and Attack choices 1, 2, 3
     if choice == "1":
         damage = random.randint(2, 4)
         enemy_hp -= damage
@@ -40,15 +43,17 @@ while player_hp > 0 and enemy_hp > 0:
     else:
         damage = 0
         print("Invalid choice. You lose your turn.")
-
+#Clamp Pikachu HP
     if enemy_hp < 0:
         enemy_hp = 0
     print ("You attacked the Pikachu")
     print (f"Pikachu HP: {enemy_hp}")
+#Check if Pikachu is dead
     if enemy_hp == 0:
             print("You defeated the Pikachu!")
             print ("Pikachu HP was too low, experienced fatal wounds.")
             break
+#Pikachu Counterattack
     enemy_attack = random.randint(2, 5)
     player_hp -= enemy_attack
     if player_hp < 0:
