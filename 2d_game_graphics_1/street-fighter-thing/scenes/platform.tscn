@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://p6l2cdb6lbw2"]
+
+[ext_resource type="Texture2D" uid="uid://cq6b0pnughdj6" path="res://assets/Foozle_2DT0001_Science_Fiction_Labs_Tileset/Tileset/platform_moving.png" id="1_ba0x2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nlgqw"]
+size = Vector2(76.875, 17.6875)
+
+[node name="Platform" type="AnimatableBody2D"]
+position = Vector2(-86, -63)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(21.75, 7.75001)
+scale = Vector2(2.38571, 1.65385)
+texture = ExtResource("1_ba0x2")
+region_enabled = true
+region_rect = Rect2(-1, 76, 35, 13)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(18.4375, 5.84375)
+shape = SubResource("RectangleShape2D_nlgqw")
+one_way_collision = true
