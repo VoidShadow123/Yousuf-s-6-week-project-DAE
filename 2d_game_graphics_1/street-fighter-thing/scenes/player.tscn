@@ -1,9 +1,20 @@
-[gd_scene load_steps=34 format=3 uid="uid://b4ruhnaa0qvkv"]
+[gd_scene load_steps=37 format=3 uid="uid://b4ruhnaa0qvkv"]
 
 [ext_resource type="Texture2D" uid="uid://52mrvqjfvnyd" path="res://assets/StickmanPack/Idle/thickIdleSheet.png" id="1_4flbx"]
 [ext_resource type="Script" uid="uid://d0so6jqgmylgr" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://iee6e2mu3nrk" path="res://assets/StickmanPack/Punch/thickPunchSheet.png" id="3_dqkch"]
 [ext_resource type="Texture2D" uid="uid://d3b8rerf2ehnk" path="res://assets/StickmanPack/Run/thickRunSheet.png" id="3_qhqgy"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b26j0"]
+radius = 9.0
+height = 50.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dqkch"]
+radius = 9.0
+height = 50.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dqkch"]
+size = Vector2(5, 5)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_onrkg"]
 atlas = ExtResource("1_4flbx")
@@ -198,38 +209,101 @@ animations = [{
 "speed": 20.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b26j0"]
-radius = 4.0
-height = 50.0
+[sub_resource type="Animation" id="Animation_dqkch"]
+resource_name = "Punch"
+length = 4.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0333333, 0.0666667, 0.1, 0.333333, 1.83333, 7.76667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [&"Punch", &"Punch", &"Punch", &"Punch", &"Punch", &"Punch"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:animation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"update": 1,
+"values": []
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AnimatedSprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0333333, 0.466667, 0.9, 1.3, 1.73333, 2.16667, 2.56667, 3.03333, 3.43333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [9, 0, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"values": []
+}
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dqkch"]
-radius = 4.0
-height = 50.0
+[sub_resource type="Animation" id="Animation_qlg0r"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Punch"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [7]
+}
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_dqkch"]
-size = Vector2(5, 5)
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tuyoq"]
+_data = {
+&"Punch": SubResource("Animation_dqkch"),
+&"RESET": SubResource("Animation_qlg0r")
+}
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" groups=["player"]]
 collision_mask = 3
 script = ExtResource("1_g2els")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-z_index = 5
-position = Vector2(-1, -28.5)
-scale = Vector2(0.96875, 0.953125)
-sprite_frames = SubResource("SpriteFrames_dw050")
-animation = &"Punch"
-autoplay = "Idle"
-frame = 9
-frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-4, -26)
 shape = SubResource("CapsuleShape2D_b26j0")
 
 [node name="Hurtbox" type="Area2D" parent="."]
-collision_layer = 4
-collision_mask = 2
+collision_layer = 2
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(-4, -26)
@@ -241,10 +315,26 @@ collision_mask = 4
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+visibility_layer = 512
 position = Vector2(13, -34)
 shape = SubResource("RectangleShape2D_dqkch")
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 5
+position = Vector2(-1, -28.5)
+scale = Vector2(0.96875, 0.953125)
+sprite_frames = SubResource("SpriteFrames_dw050")
+animation = &"Punch"
+autoplay = "Idle"
+frame = 7
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimatedSprite2D"]
+root_node = NodePath("../..")
+libraries = {
+&"": SubResource("AnimationLibrary_tuyoq")
+}
 
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

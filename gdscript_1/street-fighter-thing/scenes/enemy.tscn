@@ -199,30 +199,28 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5uy6h"]
-radius = 5.0
+radius = 8.0
 height = 48.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_c4w8v"]
-radius = 5.0
+radius = 8.0
 height = 48.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c4w8v"]
 size = Vector2(5, 5)
 
-[node name="Enemy" type="CharacterBody2D"]
+[node name="Enemy" type="CharacterBody2D" groups=["player"]]
 z_index = 5
 collision_mask = 3
 script = ExtResource("1_c4w8v")
 
-[node name="Player2AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 z_index = 5
 position = Vector2(3, 1)
 scale = Vector2(1, 0.96875)
 sprite_frames = SubResource("SpriteFrames_thsr5")
 animation = &"Punch"
 autoplay = "Idle"
-frame = 9
-frame_progress = 1.0
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
 z_index = 5
@@ -231,15 +229,14 @@ shape = SubResource("CapsuleShape2D_5uy6h")
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 4
-collision_mask = 2
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(0, 5)
 shape = SubResource("CapsuleShape2D_c4w8v")
 
 [node name="Hitbox" type="Area2D" parent="."]
-collision_layer = 2
-collision_mask = 4
+collision_layer = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 position = Vector2(19, -5)
