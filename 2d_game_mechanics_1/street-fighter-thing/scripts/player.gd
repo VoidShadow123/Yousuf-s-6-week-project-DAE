@@ -1,32 +1,41 @@
 extends CharacterBody2D
 
 @export var speed := 200
-@export var jump_force := -550
+@export var jump_force := -500
 @export var gravity := 800
 @export var damage := 10
 @export var max_health := 100
 
 var health := max_health
 var is_attacking := false
+var punch_count := 0
+
+@export var punch_label_path: NodePath   # assign to your “Player1Punches” Label
+
+@onready var punch_timer: Timer = $PunchTimer
 
 func _ready():
-	# Connect the hurtbox signal to this script
-	$Hurtbox.connect("area_entered", self._on_Hurtbox_area_entered)
-	$Hitbox.monitoring = false
+	# UI init
+	if punch_label_path != NodePath(""):
+		get_node(punch_label_path).text = "Player 1 Punches: 0"
+
+	# Combat init
+	$Hurtbox.monitoring = true
+	$Hurtbox.connect("area_entered", _on_Hurtbox_area_entered)
+	$Hitbox.monitoring = false  # only enabled during attack
+	punch_timer.timeout.connect(_on_punch_timer_timeout)
 
 func _physics_process(delta):
-	# Apply gravity
+	# gravity
 	if not is_on_floor():
 		velocity.y += gravity * delta
 	else:
 		velocity.y = min(velocity.y, 0)
 
-	var input_vector = Vector2.ZERO
-
+	var input_x := 0.0
 	if not is_attacking:
-		input_vector.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-		velocity.x = input_vector.x * speed
-
+		input_x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+		velocity.x = input_x * speed
 		if Input.is_action_just_pressed("jump") and is_on_floor():
 			velocity.y = jump_force
 	else:
@@ -34,53 +43,52 @@ func _physics_process(delta):
 
 	move_and_slide()
 
-	# Attack input
+	# Attack
 	if Input.is_action_just_pressed("attack") and not is_attacking:
 		start_attack()
 
-	# --- Animation handling ---
+	# Anim
 	if is_attacking:
 		$AnimatedSprite2D.play("Punch")
+	elif input_x != 0:
+		$AnimatedSprite2D.flip_h = input_x < 0
+		$AnimatedSprite2D.play("Run")
 	else:
-		if input_vector.x != 0:
-			$AnimatedSprite2D.flip_h = input_vector.x < 0
-			$AnimatedSprite2D.play("Run")
-		else:
-			$AnimatedSprite2D.play("Idle")
+		$AnimatedSprite2D.play("Idle")
 
 func start_attack():
 	is_attacking = true
-	$AnimatedSprite2D.play("Punch")
 	$Hitbox.monitoring = true
-	$Timer.start(0.5)  # Attack lasts 0.5s
-	await $Timer.timeout
+	punch_timer.start(0.5)
+
+func _on_punch_timer_timeout():
 	$Hitbox.monitoring = false
 	is_attacking = false
 
-# This function is called when a hitbox enters this character's hurtbox.
-func _on_Hurtbox_area_entered(area):
-	# Check if the colliding area is a hitbox
-	if area.name == "Hitbox":
-		var attacker = area.get_parent()
-		# Make sure the attacker isn't this character and has a damage-providing function
-		if attacker != self and attacker.has_method("get_damage"):
-			take_damage(attacker.get_damage())
+func _on_Hurtbox_area_entered(area: Area2D):
+	if not area or area.name != "Hitbox":
+		return
+	var attacker := area.get_parent()
+	print("[P1 Hurtbox] entered by:", area.name, " attacker=", attacker.name)
 
-# This function provides the damage value for an external object to read.
-func get_damage():
+	if attacker == self:
+		return
+	if attacker.has_method("get_damage"):
+		take_damage(attacker.get_damage())
+	# Credit the attacker for the hit
+	if attacker.has_method("register_punch"):
+		attacker.register_punch()
+
+func register_punch():
+	punch_count += 1
+	if punch_label_path != NodePath(""):
+		get_node(punch_label_path).text = "Player 1 Punches: " + str(punch_count)
+
+func get_damage() -> int:
 	return damage
 
-func take_damage(damage):
-	health -= damage
-	print(name, " took ", damage, " damage! HP: ", health)
+func take_damage(amount: int):
+	health -= amount
+	print("Player 1 HP:", health)
 	if health <= 0:
-		print(name, " is defeated!")
-		# You can add logic here for what happens when the player is defeated (e.g., game over, restart, etc.)
-func start_hitbox():
-	$Hitbox.monitoring = true
-	print("Hitbox Activated!")
-
-func end_hitbox():
-	$Hitbox.monitoring = false
-	print("Hitbox Deactivated!")
-	is_attacking = false
+		queue_free()

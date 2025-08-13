@@ -207,7 +207,7 @@ radius = 8.0
 height = 48.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c4w8v"]
-size = Vector2(5, 5)
+size = Vector2(5, 4.5)
 
 [node name="Enemy" type="CharacterBody2D" groups=["player"]]
 z_index = 5
@@ -221,6 +221,8 @@ scale = Vector2(1, 0.96875)
 sprite_frames = SubResource("SpriteFrames_thsr5")
 animation = &"Punch"
 autoplay = "Idle"
+frame = 9
+frame_progress = 1.0
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
 z_index = 5
@@ -228,19 +230,27 @@ position = Vector2(0, 5)
 shape = SubResource("CapsuleShape2D_5uy6h")
 
 [node name="Hurtbox" type="Area2D" parent="."]
-collision_layer = 4
-collision_mask = 0
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(0, 5)
 shape = SubResource("CapsuleShape2D_c4w8v")
 
 [node name="Hitbox" type="Area2D" parent="."]
-collision_layer = 8
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(19, -5)
+position = Vector2(-18, -5)
 shape = SubResource("RectangleShape2D_c4w8v")
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
+
+[node name="PunchTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_Hurtbox_area_entered"]
+[connection signal="area_entered" from="Hitbox" to="." method="_on_Hurtbox_area_entered"]
+[connection signal="timeout" from="PunchTimer" to="." method="_on_punch_timer_timeout"]
